@@ -2,6 +2,7 @@ import 'package:dental_care/db/models/dental_form.dart';
 
 class SampleForms {
   static DentalForm completeForm1 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                               patientID: 1,
                                                firstName: "Hasan", 
                                                lastName: "Raef", 
                                                age: 23, 
@@ -15,6 +16,7 @@ class SampleForms {
                                                dentistName: "Majd");
 
   static DentalForm completeForm2 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                               patientID: 2,
                                                firstName: "Roa", 
                                                lastName: "Mari", 
                                                age: 17, 
@@ -28,6 +30,7 @@ class SampleForms {
                                                dentistName: "Saif");
 
   static DentalForm completeForm3 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                               patientID: 2,
                                                firstName: "Ali", 
                                                lastName: "Raef", 
                                                age: 29, 
@@ -41,6 +44,7 @@ class SampleForms {
                                                dentistName: "Saif");
   
   static DentalForm completeForm4 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                               patientID: 2,
                                                firstName: "Fatima", 
                                                lastName: "Saad", 
                                                age: 33, 
@@ -54,6 +58,7 @@ class SampleForms {
                                                dentistName: "Majd");
 
   static DentalForm noAllergiesForm1 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                                  patientID: 2,
                                                   firstName: "Sami", 
                                                   lastName: "Hasan", 
                                                   age: 27, 
@@ -67,6 +72,7 @@ class SampleForms {
                                                   dentistName: "Saif");
 
   static DentalForm noAllergiesForm2 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                                  patientID: 2,
                                                   firstName: "Imad", 
                                                   lastName: "Raef", 
                                                   age: 43, 
@@ -80,6 +86,7 @@ class SampleForms {
                                                   dentistName: "Majd");
   
   static DentalForm noImgForm1 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 2,
                                             firstName: "Saad", 
                                             lastName: "Majid", 
                                             age: 25, 
@@ -93,6 +100,7 @@ class SampleForms {
                                             dentistName: "Majd");
                                             
   static DentalForm noImgForm2 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 2,
                                             firstName: "Brad", 
                                             lastName: "Pit", 
                                             age: 50, 
@@ -106,6 +114,7 @@ class SampleForms {
                                             dentistName: "Saif");
 
   static DentalForm noAppointmentForm1 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 1,
                                             firstName: "Casper", 
                                             lastName: "Lee", 
                                             age: 45, 
@@ -119,6 +128,7 @@ class SampleForms {
                                             dentistName: null);
                                             
   static DentalForm noAppointmentForm2 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 1,
                                             firstName: "Hasan", 
                                             lastName: "Naemat", 
                                             age: 69, 
@@ -132,6 +142,7 @@ class SampleForms {
                                             dentistName: null);
 
   static DentalForm allMissingForm1 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 1,
                                             firstName: "Fahd", 
                                             lastName: "Sami", 
                                             age: 14, 
@@ -145,6 +156,7 @@ class SampleForms {
                                             dentistName: null);
   
   static DentalForm allMissingForm2 = DentalForm(creationDT: DateTime(2003, 6, 15), 
+                                            patientID: 1,
                                             firstName: "Remas", 
                                             lastName: "Ali", 
                                             age: 14, 

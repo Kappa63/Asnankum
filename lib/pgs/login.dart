@@ -2,6 +2,7 @@ import 'package:dental_care/db/models/user.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dental_care/error_states.dart';
 import 'package:dental_care/db/users_db.dart';
+import 'package:dental_care/pgs/ds_home.dart';
 import 'package:dental_care/pgs/p_home.dart';
 import 'package:dental_care/funcs.dart';
 import 'package:flutter/material.dart';
@@ -46,13 +47,19 @@ class _LoginState extends State<Login> {
       User loggedUsr = await UsersDB.db_I.getUser_byLogin(usr, Convertors.toSHA256(pwd), widget.type);
       await UsersDB.db_I.update(loggedUsr.replicate(loginState: true));
       LoginErrorManager.bl_Error = false;
+      if(widget.type == "Patient")
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeP(username: usr,
+                                                                                      id: loggedUsr.id!,)), 
+                                    (Route<dynamic> route) => false);
+      else
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeDS(username: usr, 
+                                                                                       id: loggedUsr.id!,)), 
+                                      (Route<dynamic> route) => false);
     } on Exception {
       LoginErrorManager.bl_Error = true;
       setState(() {});
       return;
     }
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeP(username: usr,)), 
-                                 (Route<dynamic> route) => false);
   }
 
   @override

@@ -13,9 +13,10 @@ import 'dart:developer';
 import 'dart:io';
 
 class HomeP extends StatefulWidget {
-  const HomeP({super.key, required this.username});
+  const HomeP({super.key, required this.username, required this.id});
 
   final String username;
+  final int id;
 
   @override
   State<HomeP> createState() => _HomePState();
@@ -32,6 +33,13 @@ class _HomePState extends State<HomeP> {
                                    SampleForms.noAppointmentForm1, SampleForms.noImgForm1,
                                    SampleForms.allMissingForm1, SampleForms.completeForm3];
 
+  List<DentalForm>? myForms;
+
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   myForms = await DentalFormsDB.db_I.getForm_byPatientID(super.widget.id);
+  // }
   
   Sex? _sex;
   File? _img;
@@ -66,6 +74,7 @@ class _HomePState extends State<HomeP> {
 
   Future createAppointment() async {
     await DentalFormsDB.db_I.insert(DentalForm(creationDT: DateTime.now(),
+                                               patientID: widget.id,
                                                firstName: _fnControl.text.trim(), 
                                                lastName: _lnControl.text.trim(), 
                                                age: GeneralFuncs.calcAge(_birth), 
@@ -88,6 +97,8 @@ class _HomePState extends State<HomeP> {
     _img = null;
 
     _birth = DateTime(2003, 6, 15);
+
+    curStep = 0;
 
     setState(() {});
   }
@@ -118,61 +129,63 @@ class _HomePState extends State<HomeP> {
             children: [
               SizedBox(height: 20,),
 
-              SizedBox(
-                height: 300,
-                child: ScrollSnapList(
-                  dynamicItemSize: true,
-                  dynamicItemOpacity: 0.7,
-                  itemCount: _forms.length,
-                  itemSize: 200,
-                  itemBuilder:(ctx, i) {
-                    DentalForm form = _forms[i];
-                    return SizedBox(
-                      width: 200,
-                      height: 300,
-                      child: Card(
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
-                                                      borderRadius: BorderRadius.circular(20)),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Column(
-                            children: [
-                              form.imgPath==null? SizedBox(
-                                                    height: 210,
-                                                    width: 200,
-                                                    child: Icon(Icons.image_not_supported,
-                                                                size: 40,)
-                                                  ):
-                                                  Image.asset(form.imgPath!, 
-                                                              fit: BoxFit.cover,
-                                                              width: 200,
-                                                              height: 210,
-                                                  ),
-                              SizedBox(height: 10,),
-                              Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
-                                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                              SizedBox(height: 15,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(form.status?"CHECKED!":"UNCHECKED", 
-                                       style: TextStyle(color: form.status?Colors.green:Colors.red,
-                                                        fontWeight: FontWeight.bold)
-                                      ),
-                                  SizedBox(width: 15,),
-                                  Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      ),
-                    );
-                  },
-                  onItemFocus:(i) {},
+              myForms==null?
+                SizedBox(height: 0,):
+                SizedBox(
+                  height: 300,
+                  child: ScrollSnapList(
+                    dynamicItemSize: true,
+                    dynamicItemOpacity: 0.7,
+                    itemCount: _forms.length,
+                    itemSize: 200,
+                    itemBuilder:(ctx, i) {
+                      DentalForm form = _forms[i];
+                      return SizedBox(
+                        width: 200,
+                        height: 300,
+                        child: Card(
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
+                                                        borderRadius: BorderRadius.circular(20)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Column(
+                              children: [
+                                form.imgPath==null? SizedBox(
+                                                      height: 210,
+                                                      width: 200,
+                                                      child: Icon(Icons.image_not_supported,
+                                                                  size: 40,)
+                                                    ):
+                                                    Image.asset(form.imgPath!, 
+                                                                fit: BoxFit.cover,
+                                                                width: 200,
+                                                                height: 210,
+                                                    ),
+                                SizedBox(height: 10,),
+                                Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
+                                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                SizedBox(height: 15,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(form.status?"CHECKED!":"UNCHECKED", 
+                                        style: TextStyle(color: form.status?Colors.green:Colors.red,
+                                                          fontWeight: FontWeight.bold)
+                                        ),
+                                    SizedBox(width: 15,),
+                                    Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ),
+                      );
+                    },
+                    onItemFocus:(i) {},
+                  ),
                 ),
-              ),
 
               SizedBox(height: 40,),
 
@@ -491,9 +504,9 @@ class _HomePState extends State<HomeP> {
                                                       child: Icon(Icons.image_not_supported,
                                                                   size: 40,)
                                                     ):
-                                                    Image.asset(_img!.path, 
+                                                    Image.file(_img!, 
                                                                 fit: BoxFit.cover,
-                                                                width: 200,
+                                                                width: 400,
                                                                 height: 200,
                                                     ),
                                 SizedBox(height: 10,),

@@ -2,7 +2,7 @@ final String dental_forms_table = 'dental_forms';
 
 class DentalFormFields {
   static final List<String> vals = [id, creationDT,
-                                    firstName, lastName, age, sex,
+                                    patientID, firstName, lastName, age, sex,
                                     allergies, desc,
                                     imgPath,
                                     status, appointmentDT, dentistID, dentistName];
@@ -10,6 +10,7 @@ class DentalFormFields {
   static final String id = "_id";
   static final String creationDT = "creationDT";
 
+  static final String patientID = "patientID";
   static final String firstName = "firstName";
   static final String lastName = "lastName";
   static final String age = "age";
@@ -30,6 +31,7 @@ class DentalForm {
   final int? id;
   final DateTime creationDT;
 
+  final int patientID;
   final String firstName;
   final String lastName;
   final int age;
@@ -50,6 +52,7 @@ class DentalForm {
     this.id,
     required this.creationDT,
 
+    required this.patientID,
     required this.firstName,
     required this.lastName,
     required this.age,
@@ -70,6 +73,7 @@ class DentalForm {
     int? id,
     DateTime? creationDT,
 
+    int? patientID,
     String? firstName,
     String? lastName,
     int? age,
@@ -87,6 +91,7 @@ class DentalForm {
   }) => DentalForm(id: id?? this.id,
                    creationDT: creationDT?? this.creationDT,
 
+                   patientID: patientID?? this.patientID,
                    firstName: firstName?? this.firstName,
                    lastName: lastName?? this.lastName,
                    age: age?? this.age,
@@ -107,6 +112,7 @@ class DentalForm {
     id: dt[DentalFormFields.id] as int?,
     creationDT: DateTime.parse(dt[DentalFormFields.creationDT] as String),
 
+    patientID: dt[DentalFormFields.patientID] as int,
     firstName: dt[DentalFormFields.firstName] as String,
     lastName: dt[DentalFormFields.lastName] as String,
     age: dt[DentalFormFields.age] as int,
@@ -117,7 +123,7 @@ class DentalForm {
 
     imgPath: dt[DentalFormFields.imgPath] as String,
 
-    status: dt[DentalFormFields.status] as bool,
+    status: dt[DentalFormFields.status] == 1,
     appointmentDT: DateTime.parse(dt[DentalFormFields.appointmentDT] as String),
     dentistID: dt[DentalFormFields.dentistID] as int,
     dentistName: dt[DentalFormFields.dentistName] as String,
@@ -127,6 +133,7 @@ class DentalForm {
     DentalFormFields.id: id,
     DentalFormFields.creationDT: creationDT.toIso8601String(),
 
+    DentalFormFields.patientID: patientID,
     DentalFormFields.firstName: firstName,
     DentalFormFields.lastName: lastName,
     DentalFormFields.age: age,
@@ -137,7 +144,7 @@ class DentalForm {
 
     DentalFormFields.imgPath: imgPath,
 
-    DentalFormFields.status: status,
+    DentalFormFields.status: status?1:0,
     DentalFormFields.appointmentDT: appointmentDT?.toIso8601String(),
     DentalFormFields.dentistID: dentistID,
     DentalFormFields.dentistName: DentalFormFields.dentistName,

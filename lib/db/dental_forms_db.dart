@@ -30,6 +30,7 @@ class DentalFormsDB {
                             ${DentalFormFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
                             ${DentalFormFields.creationDT} TEXT NOT NULL,
 
+                            ${DentalFormFields.patientID} INTEGER NOT NULL,
                             ${DentalFormFields.firstName} TEXT NOT NULL,
                             ${DentalFormFields.lastName} TEXT NOT NULL,
                             ${DentalFormFields.age} INTEGER NOT NULL,
@@ -62,9 +63,27 @@ class DentalFormsDB {
                                 where: "${DentalFormFields.id} = ?", whereArgs: [id]);
 
     if(form.isEmpty)
-      throw Exception("Id $id not found");
+      throw Exception("Id $id not Found");
       
     return DentalForm.Deserialize(form.first);
+  }
+
+  Future<List<DentalForm>?> getForm_byDrID(int? dID) async {
+    final db_ = await db_I.db;
+
+    final forms = await db_.query(dental_forms_table, columns: DentalFormFields.vals, 
+                                where: "${DentalFormFields.dentistID} = ?", whereArgs: [dID]);    
+    
+    return forms.isEmpty?null:forms.map((e) => DentalForm.Deserialize(e)).toList();
+  }
+
+  Future<List<DentalForm>?> getForm_byPatientID(int? pID) async {
+    final db_ = await db_I.db;
+
+    final forms = await db_.query(dental_forms_table, columns: DentalFormFields.vals, 
+                                where: "${DentalFormFields.patientID} = ?", whereArgs: [pID]);    
+    
+    return forms.isEmpty?null:forms.map((e) => DentalForm.Deserialize(e)).toList();
   }
 
   Future<int> update(DentalForm form) async {
