@@ -18,7 +18,8 @@ class DentalFormsDB {
   }
 
   Future<Database> _initDB(String f_name) async {
-    final db_path = await getDatabasesPath();
+    String db_path;
+    db_path = await getDatabasesPath();
     final file_path = join(db_path, f_name); 
     log(file_path);
     return await openDatabase(file_path, version: 1, onCreate: _createDB);
@@ -39,7 +40,7 @@ class DentalFormsDB {
                             ${DentalFormFields.allergies} TEXT,
                             ${DentalFormFields.desc} TEXT NOT NULL,
 
-                            ${DentalFormFields.imgPath} TEXT NOT NULL,
+                            ${DentalFormFields.imgPath} TEXT,
 
                             ${DentalFormFields.status} BOOLEAN NOT NULL,
                             ${DentalFormFields.appointmentDT} TEXT,
@@ -68,22 +69,29 @@ class DentalFormsDB {
     return DentalForm.Deserialize(form.first);
   }
 
-  Future<List<DentalForm>?> getForm_byDrID(int? dID) async {
+  Future<List<DentalForm>> getForm_byDrID(int? dID) async {
     final db_ = await db_I.db;
 
-    final forms = await db_.query(dental_forms_table, columns: DentalFormFields.vals, 
-                                where: "${DentalFormFields.dentistID} = ?", whereArgs: [dID]);    
+    final forms = dID!=null? await db_.query(dental_forms_table, 
+                                             columns: DentalFormFields.vals, 
+                                             where: "${DentalFormFields.dentistID} = ?", 
+                                             whereArgs: [dID]): 
+                             await db_.query(dental_forms_table, 
+                                             columns: DentalFormFields.vals, 
+                                             where: "${DentalFormFields.dentistID} IS NULL");
     
-    return forms.isEmpty?null:forms.map((e) => DentalForm.Deserialize(e)).toList();
+    log(forms.isEmpty.toString());
+
+    return forms.isEmpty?List.empty(growable: true):forms.map((e) => DentalForm.Deserialize(e)).toList();
   }
 
-  Future<List<DentalForm>?> getForm_byPatientID(int? pID) async {
+  Future<List<DentalForm>> getForm_byPatientID(int? pID) async {
     final db_ = await db_I.db;
 
     final forms = await db_.query(dental_forms_table, columns: DentalFormFields.vals, 
                                 where: "${DentalFormFields.patientID} = ?", whereArgs: [pID]);    
     
-    return forms.isEmpty?null:forms.map((e) => DentalForm.Deserialize(e)).toList();
+    return forms.isEmpty?List.empty(growable: true):forms.map((e) => DentalForm.Deserialize(e)).toList();
   }
 
   Future<int> update(DentalForm form) async {

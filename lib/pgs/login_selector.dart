@@ -1,7 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dental_care/pgs/login.dart';
 import 'package:flutter/material.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginSelector extends StatefulWidget {
   const LoginSelector({super.key});
@@ -12,9 +12,30 @@ class LoginSelector extends StatefulWidget {
 
 class _LoginSelectorState extends State<LoginSelector> {
 
+  Future askPermission() async {
+    PermissionStatus status = await Permission.manageExternalStorage.request();
+    return status.isDenied? await askPermission():null;
+  }
+
   @override
   Widget build(BuildContext ctx){
     return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 6,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+        toolbarOpacity: 0.9,
+        toolbarHeight: 40,
+        backgroundColor: Colors.pink[300],
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+              Text("Dental Care", 
+                    style: GoogleFonts.oswald(fontSize: 20,),),
+          ],
+        ),
+      ),
       backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: Center(
@@ -40,7 +61,8 @@ class _LoginSelectorState extends State<LoginSelector> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () async {
+                      await askPermission();
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => Login(type: "Dental Student")), 
                                                                              (Route<dynamic> route) => false);
                     },
@@ -69,7 +91,8 @@ class _LoginSelectorState extends State<LoginSelector> {
                   SizedBox(width: 80,),
 
                   GestureDetector(
-                    onTap: (){
+                    onTap: () async {
+                      await askPermission();
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => Login(type: "Patient")), 
                                                                              (Route<dynamic> route) => false);
                     },

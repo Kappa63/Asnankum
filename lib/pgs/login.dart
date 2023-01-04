@@ -20,7 +20,6 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    // UsersDB.db_I.close();
     _uControl.dispose();
     _pControl.dispose();
     super.dispose();
@@ -65,6 +64,22 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext ctx){
     return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 6,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+        toolbarOpacity: 0.9,
+        toolbarHeight: 40,
+        backgroundColor: Colors.pink[300],
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+              Text("Dental Care", 
+                    style: GoogleFonts.oswald(fontSize: 20,),),
+          ],
+        ),
+      ),
       backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: Center(
@@ -159,13 +174,18 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(color: Colors.pink[200],
                                                 borderRadius: BorderRadius.circular(12)),
-                      child: Center(
-                        child: Text("Log In",
-                                    style: TextStyle(color: Colors.white, 
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18,), 
-                                    ),
-                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.login, color: Colors.white,),
+                          SizedBox(width: 10,),
+                          Text("Log In",
+                               style: TextStyle(color: Colors.white, 
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 18,),),
+                          SizedBox(width: 10,),
+                        ],
+                      )
                     ),
                   ),
                 ),

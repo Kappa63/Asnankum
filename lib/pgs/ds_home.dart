@@ -1,11 +1,14 @@
-import 'package:dental_care/db/samples/sample_forms.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:dental_care/db/models/dental_form.dart';
+import 'package:dental_care/pgs/login_selector.dart';
 import 'package:dental_care/db/dental_forms_db.dart';
+import 'package:dental_care/db/models/user.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dental_care/db/users_db.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'dart:developer' as dev;
 import 'dart:io';
 
 class HomeDS extends StatefulWidget {
@@ -25,275 +28,341 @@ enum Sex {
 
 class _HomeDSState extends State<HomeDS> {
 
-  final List<DentalForm> _forms = [SampleForms.completeForm1, SampleForms.noAllergiesForm2, 
-                                   SampleForms.noAppointmentForm1, SampleForms.noImgForm1,
-                                   SampleForms.allMissingForm1, SampleForms.completeForm3];
+  late Future _dataGet;
 
-  List<DentalForm>? myForms;
-  List<DentalForm>? rdyForms;
+  List<DentalForm> myForms = List.empty(growable: true);
+  List<DentalForm> rdyForms = List.empty(growable: true);
 
-  // @override
-  // void initState() async {
-  //   super.initState();
-  //   myForms = await DentalFormsDB.db_I.getForm_byDrID(super.widget.id);
-  //   rdyForms = await DentalFormsDB.db_I.getForm_byDrID(null);
-  // }
+  List<bool> myFormsState = List.empty(growable: true);
+  List<bool> rdyFormsState = List.empty(growable: true);
+
+  Future getForms() async {
+    myForms = await DentalFormsDB.db_I.getForm_byDrID(super.widget.id);
+    rdyForms = await DentalFormsDB.db_I.getForm_byDrID(null);
+
+    dev.log(rdyForms.length.toString());
+
+    myFormsState = List.filled(myForms.length, false, growable: true);
+    rdyFormsState = List.filled(rdyForms.length, false, growable: true);
+    if(myForms.isNotEmpty)
+      myFormsState[0] = true;
+    if(rdyForms.isNotEmpty)
+      rdyFormsState[0] = true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dataGet = getForms();
+  }
 
   @override
   Widget build(BuildContext ctx){
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 6,
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
-        toolbarOpacity: 0.9,
-        toolbarHeight: 40,
-        backgroundColor: Colors.pink[300],
-        title: Row(
-          children: [
-            Icon(Icons.person),
-            SizedBox(width: 10,),
-            Text("Logged in as ${widget.username}", 
-                        style: GoogleFonts.oswald(fontSize: 20,),),
-          ],
-        ),
-      ),
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 20,),
-
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("My Applications", 
-                              style: GoogleFonts.bebasNeue(fontSize: 40,
-                                                           letterSpacing: 1.3,
-                                                           fontWeight: FontWeight.bold),
-                              ),
-                ),
+    return FutureBuilder(
+      future: _dataGet,
+      builder: (ctx, snap) {
+        if(snap.connectionState == ConnectionState.done)
+          return Scaffold(
+            appBar: AppBar(
+              scrolledUnderElevation: 6,
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+              toolbarOpacity: 0.9,
+              toolbarHeight: 40,
+              backgroundColor: Colors.pink[300],
+              title: Row(
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[300]),
+                                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0),),)
+                           ),
+                    onPressed: () async {
+                      User loggedUsr = await UsersDB.db_I.getUser_byID(widget.id);
+                      await UsersDB.db_I.update(loggedUsr.replicate(loginState: false));
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => LoginSelector()), 
+                                                  (Route<dynamic> route) => false);
+                    },
+                    child: Row(
+                      children: [
+                        Text("Log out", style: TextStyle(fontWeight: FontWeight.bold),),
+                        SizedBox(width: 5,),
+                        Icon(Icons.logout, size: 16,),
+                      ],
+                    )
+                  ),
+                  Expanded(
+                    child: SizedBox(width: 10,),
+                  ),
+                  Icon(Icons.person),
+                  SizedBox(width: 10,),
+                  Text("Logged in as ${widget.username}", 
+                       style: GoogleFonts.oswald(fontSize: 20,),),
+                  SizedBox(width: 10,)
+                ],
               ),
-
-              SizedBox(height: 10,),
-
-              SizedBox(
-                height: 300,
-                child: 
-                  myForms==null?
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100),
-                      child: Column(
-                        children: [
-                          Text("No Applications", 
-                                style: TextStyle(color: Colors.red, 
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),),
-                          SizedBox(height: 10,),
-                          Text("Please Accept Some Applications First.", 
-                                style: TextStyle(color: Colors.red, 
-                                                fontSize: 16),),
-                        ],
-                      ),
-                    ):
-                    ScrollSnapList(
-                      dynamicItemSize: true,
-                      dynamicItemOpacity: 0.7,
-                      itemCount: _forms.length,
-                      itemSize: 200,
-                      itemBuilder:(ctx, i) {
-                        DentalForm form = _forms[i];
-                        return SizedBox(
-                          width: 200,
-                          height: 300,
-                          child: Card(
-                            elevation: 40,
-                            shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
-                                                          borderRadius: BorderRadius.circular(20)),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Column(
-                                children: [
-                                  form.imgPath==null? SizedBox(
-                                                        height: 210,
-                                                        width: 200,
-                                                        child: Icon(Icons.image_not_supported,
-                                                                    size: 40,)
-                                                      ):
-                                                      Image.asset(form.imgPath!, 
-                                                                  fit: BoxFit.cover,
-                                                                  width: 200,
-                                                                  height: 210,
-                                                      ),
-                                  SizedBox(height: 10,),
-                                  Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                                  SizedBox(height: 15,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(form.status?"CHECKED!":"UNCHECKED", 
-                                          style: TextStyle(color: form.status?Colors.green:Colors.red,
-                                                            fontWeight: FontWeight.bold)
-                                          ),
-                                      SizedBox(width: 15,),
-                                      Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
-                                    ],
+            ),
+            backgroundColor: Colors.grey[300],
+            body: SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(height: 20,),
+      
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("My Applications", 
+                                  style: GoogleFonts.bebasNeue(fontSize: 40,
+                                                              letterSpacing: 1.3,
+                                                              fontWeight: FontWeight.bold),
                                   ),
-                                ],
-                              ),
-                            )
-                          ),
-                        );
-                      },
-                      onItemFocus:(i) {},
                     ),
-              ),
-
-              SizedBox(height: 20,),
-
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text("Free Applications", 
-                              style: GoogleFonts.bebasNeue(fontSize: 40, 
-                                                           letterSpacing: 1.3,
-                                                           fontWeight: FontWeight.bold),
-                        ),
-                ),
-              ),
-
-              SizedBox(
-                height: 500,
-                child: 
-                  rdyForms==null?
-                    Padding(
-                      padding: const EdgeInsets.only(top: 170),
-                      child: Column(
-                        children: [
-                          Text("No Applications", 
-                                style: TextStyle(color: Colors.red, 
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),),
-                          SizedBox(height: 10,),
-                          Text("Please Wait For New Applications.", 
-                                style: TextStyle(color: Colors.red, 
-                                                fontSize: 16),),
-                        ],
-                      ),
-                    ):
-                    ScrollSnapList(
-                      itemCount: _forms.length,
-                      dynamicItemSize: true,
-                      dynamicSizeEquation: (d) {
-                        return 0.9 - min(d.abs() / 500, 0.2);
-                      },
-                      scrollDirection: Axis.vertical,
-                      dynamicItemOpacity: 0.7,
-                      itemSize: 375,
-                      itemBuilder: (ctx, i) {
-                        DentalForm form = _forms[i];
-                        return Card(
-                          elevation: 10,
-                          shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
-                                                        borderRadius: BorderRadius.circular(20)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Column(
-                              children: [
-                                form.imgPath == null? SizedBox(
-                                                      height: 200,
-                                                      width: 200,
-                                                      child: Icon(Icons.image_not_supported,
-                                                                  size: 40,)
-                                                    ):
-                                                    Image.file(File(form.imgPath!), 
-                                                                fit: BoxFit.cover,
-                                                                width: 700,
-                                                                height: 200,
-                                                    ),
-                                SizedBox(height: 10,),
-                                Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                                SizedBox(height: 15,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("UNCHECKED", 
-                                          style: TextStyle(color: Colors.red,
-                                                          fontWeight: FontWeight.bold)
-                                        ),
-                                    SizedBox(width: 15,),
-                                    Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
-                                  ],
-                                ),
-                                SizedBox(height: 12,),
-                                ExpansionTile(
-                                  key: GlobalKey(),
-                                  title: Text("details"),
-                                  childrenPadding: const EdgeInsets.fromLTRB(18, 2, 2, 10),
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text("Complaint: ", 
-                                              style: TextStyle(fontWeight: FontWeight.bold),),
-                                        Text(form.desc),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10,),
-                                    if(form.allergies!=null)
+                  ),
+      
+                  SizedBox(height: 10,),
+      
+                  SizedBox(
+                    height: 300,
+                    child: 
+                      myForms.isEmpty?
+                        Padding(
+                          padding: const EdgeInsets.only(top: 100),
+                          child: Column(
+                            children: [
+                              Text("No Applications", 
+                                    style: TextStyle(color: Colors.red, 
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 30),),
+                              SizedBox(height: 10,),
+                              Text("Please Accept Some Applications First.", 
+                                    style: TextStyle(color: Colors.red, 
+                                                    fontSize: 16),),
+                            ],
+                          ),
+                        ):
+                        ScrollSnapList(
+                          dynamicItemSize: true,
+                          dynamicItemOpacity: 0.7,
+                          itemCount: myForms.length,
+                          itemSize: 200,
+                          itemBuilder:(ctx, i) {
+                            DentalForm form = myForms[i];
+                            return SizedBox(
+                              width: 200,
+                              height: 300,
+                              child: Card(
+                                elevation: 40,
+                                shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
+                                                              borderRadius: BorderRadius.circular(20)),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Column(
+                                    children: [
+                                      form.imgPath==null? SizedBox(
+                                                            height: 210,
+                                                            width: 200,
+                                                            child: Icon(Icons.image_not_supported,
+                                                                        size: 40,)
+                                                          ):
+                                                          Image.file(File(form.imgPath!), 
+                                                                      fit: BoxFit.cover,
+                                                                      width: 200,
+                                                                      height: 210,
+                                                          ),
+                                      SizedBox(height: 10,),
+                                      Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                      SizedBox(height: 15,),
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Text("Allergies: ", 
-                                              style: TextStyle(fontWeight: FontWeight.bold),),
-                                          Text(form.allergies!),
+                                          Text(form.status?"CHECKED!":"UNCHECKED", 
+                                              style: TextStyle(color: form.status?Colors.green:Colors.red,
+                                                                fontWeight: FontWeight.bold)
+                                              ),
+                                          SizedBox(width: 15,),
+                                          Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
                                         ],
                                       ),
+                                    ],
+                                  ),
+                                )
+                              ),
+                            );
+                          },
+                          onItemFocus:(i) {},
+                        ),
+                  ),
+      
+                  SizedBox(height: 20,),
+      
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("Free Applications", 
+                                  style: GoogleFonts.bebasNeue(fontSize: 40, 
+                                                              letterSpacing: 1.3,
+                                                              fontWeight: FontWeight.bold),
+                            ),
+                    ),
+                  ),
+      
+                  SizedBox(
+                    height: 362,
+                    child: 
+                      rdyForms.isEmpty?
+                        Padding(
+                          padding: const EdgeInsets.only(top: 170),
+                          child: Column(
+                            children: [
+                              Text("No Applications", 
+                                    style: TextStyle(color: Colors.red, 
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 30),),
+                              SizedBox(height: 10,),
+                              Text("Please Wait For New Applications.", 
+                                    style: TextStyle(color: Colors.red, 
+                                                    fontSize: 16),),
+                            ],
+                          ),
+                        ):
+                        ScrollSnapList(
+                          itemCount: rdyForms.length,
+                          dynamicItemSize: true,
+                          dynamicSizeEquation: (d) {
+                            return 0.9 - min(d.abs() / 500, 0.2);
+                          },
+                          scrollDirection: Axis.vertical,
+                          dynamicItemOpacity: 0.7,
+                          itemSize: 375,
+                          itemBuilder: (ctx, i) {
+                            DentalForm form = rdyForms[i];
+                            return Card(
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
+                                                            borderRadius: BorderRadius.circular(20)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Column(
+                                  children: [
+                                    form.imgPath == null? SizedBox(
+                                                          height: 200,
+                                                          width: 200,
+                                                          child: Icon(Icons.image_not_supported,
+                                                                      size: 40,)
+                                                        ):
+                                                        Image.file(File(form.imgPath!), 
+                                                                    fit: BoxFit.cover,
+                                                                    width: 700,
+                                                                    height: 200,
+                                                        ),
+                                    SizedBox(height: 10,),
+                                    Text("${form.firstName} ${form.lastName} (${form.age}${form.sex=='male'?'M':'F'})",
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 15,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text("UNCHECKED", 
+                                              style: TextStyle(color: Colors.red,
+                                                              fontWeight: FontWeight.bold)
+                                            ),
+                                        SizedBox(width: 15,),
+                                        Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12,),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft, 
+                                        child: Text("Details:", 
+                                                    style: TextStyle(fontSize: 18, 
+                                                                      fontStyle: FontStyle.italic,
+                                                                      fontWeight: FontWeight.bold))),
+                                    ),
+                                    (rdyFormsState[i]?
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(18, 2, 2, 10),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text("Complaint: ", 
+                                                      style: TextStyle(fontWeight: FontWeight.bold),),
+                                                Text(form.desc),
+                                              ],
+                                            ),
+                                            SizedBox(height: 10,),
+                                            if(form.allergies!=null)
+                                              Row(
+                                                children: [
+                                                  Text("Allergies: ", 
+                                                      style: TextStyle(fontWeight: FontWeight.bold),),
+                                                  Text(form.allergies!),
+                                                ],
+                                              ),
+                                          ],
+                                        ),
+                                      ):
+                                      SizedBox(height: 0,)),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              DateTime nowDate = DateTime.now();
+                                              DateTime? appointmentDate = await showDatePicker(context: ctx, 
+                                                              initialDate: nowDate, 
+                                                              firstDate: nowDate, 
+                                                              lastDate: DateTime(2024),);
+                                              if(appointmentDate == null) return;
+
+                                              DentalForm nForm = form.replicate(appointmentDT: appointmentDate,
+                                                                                      dentistID: widget.id,
+                                                                                      dentistName: widget.username);
+                                              
+                                              DentalFormsDB.db_I.update(nForm);
+                                              rdyFormsState.removeAt(i);
+                                              rdyForms.removeAt(i);
+                                              myForms.add(nForm);
+                                              myFormsState.add(false);
+                                              setState(() {});
+                                            }, 
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 14),
+                                              child: Text("Accept", 
+                                                          style: TextStyle(fontWeight: FontWeight.bold,
+                                                                          fontSize: 18),),
+                                            )
+                                          ),
+                                        )
+                                      ]
+                                    ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          DateTime nowDate = DateTime.now();
-                                          DateTime? appointmentDate = await showDatePicker(context: ctx, 
-                                                          initialDate: nowDate, 
-                                                          firstDate: nowDate, 
-                                                          lastDate: DateTime(2024),);
-                                          if(appointmentDate == null) return;
-                                          
-                                          DentalFormsDB.db_I.update(form.replicate(appointmentDT: appointmentDate,
-                                                                                   dentistID: widget.id,
-                                                                                   dentistName: widget.username));
-                                        }, 
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 12),
-                                          child: Text("Accept", 
-                                                      style: TextStyle(fontWeight: FontWeight.bold,
-                                                                      fontSize: 18),),
-                                        )
-                                      ),
-                                    )
-                                  ]
-                                ),
-                              ],
-                            ),
-                          )
-                        );
-                      },
-                      onItemFocus: (i) {
-                        
-                      },
-                    ),
-              ),
-            ],
-          )
-        ),
-      ),
+                              )
+                            );
+                          },
+                          onItemFocus: (i) {
+                            rdyFormsState = rdyFormsState.map((e) => false).toList();
+                            rdyFormsState[i] = true;
+                          },
+                        ),
+                  ),
+                ],
+              )
+            ),
+          );
+        else if (snap.hasError) 
+          throw Exception("Missing Data: Snap Error");
+        else 
+          return Center(child: CircularProgressIndicator());
+        
+      }
     );
   }
 }

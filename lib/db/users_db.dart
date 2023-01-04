@@ -45,7 +45,7 @@ class UsersDB {
                                   "ce012bbb6a075d2c91e4da607fcbbb9b9c4a3d3a9a9b5e2889f24fdb1d9952f5",
                                   FALSE),
 
-                                ("DentalStudent", "TestDS1",
+                                ("Dental Student", "TestDS1",
                                   "1772d0119cc344f719853b2c032c2921398636766efd3ed2ffbad1c798e2bd97",
                                   FALSE),
 
@@ -87,6 +87,16 @@ class UsersDB {
       throw Exception("User not found");
       
     return User.Deserialize(user.first);
+  }
+
+  Future<User?> getLoggedIn() async {
+    final db_ = await db_I.db;
+
+    final user = await db_.query(users_table, columns: UserFields.vals, 
+                                where: '''${UserFields.loginState} = ?''', 
+                                whereArgs: [1]);
+
+    return user.isEmpty?null:User.Deserialize(user.first);
   }
 
   Future<int> update(User user) async {

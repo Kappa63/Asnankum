@@ -118,15 +118,15 @@ class DentalForm {
     age: dt[DentalFormFields.age] as int,
     sex: dt[DentalFormFields.sex] as String,
 
-    allergies: dt[DentalFormFields.allergies] as String,
+    allergies: dt[DentalFormFields.allergies]!=null?dt[DentalFormFields.allergies] as String:null,
     desc: dt[DentalFormFields.desc] as String,
 
-    imgPath: dt[DentalFormFields.imgPath] as String,
+    imgPath: dt[DentalFormFields.imgPath]!=null?dt[DentalFormFields.imgPath] as String:null,
 
     status: dt[DentalFormFields.status] == 1,
-    appointmentDT: DateTime.parse(dt[DentalFormFields.appointmentDT] as String),
-    dentistID: dt[DentalFormFields.dentistID] as int,
-    dentistName: dt[DentalFormFields.dentistName] as String,
+    appointmentDT: dt[DentalFormFields.appointmentDT]!=null?DateTime.parse(dt[DentalFormFields.appointmentDT] as String):null,
+    dentistID: dt[DentalFormFields.dentistID]!=null?dt[DentalFormFields.dentistID] as int:null,
+    dentistName: dt[DentalFormFields.dentistName]!=null?dt[DentalFormFields.dentistName] as String:null,
   );
 
   Map<String, Object?> Serialize() => {    
