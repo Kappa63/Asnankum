@@ -15,10 +15,9 @@ import 'dart:developer';
 import 'dart:io';
 
 class HomeP extends StatefulWidget {
-  const HomeP({super.key, required this.username, required this.id});
+  const HomeP({super.key, required this.user});
 
-  final String username;
-  final int id;
+  final User user;
 
   @override
   State<HomeP> createState() => _HomePState();
@@ -37,7 +36,7 @@ class _HomePState extends State<HomeP> {
   List<bool> myFormsState = List.empty(growable: true);
 
   Future getForms() async {
-    myForms = await DentalFormsDB.db_I.getForm_byPatientID(super.widget.id);
+    myForms = await DentalFormsDB.db_I.getForm_byPatientID(super.widget.user.id);
 
     myFormsState = List.filled(myForms.length, false);
     if(myForms.isNotEmpty)
@@ -78,7 +77,7 @@ class _HomePState extends State<HomeP> {
   Future createAppointment() async {
     String aTrim = _aControl.text.trim();
     DentalForm nForm = await DentalFormsDB.db_I.insert(DentalForm(creationDT: DateTime.now(),
-                                              patientID: widget.id,
+                                              patientID: widget.user.id!,
                                               firstName: _fnControl.text.trim(), 
                                               lastName: _lnControl.text.trim(), 
                                               age: GeneralFuncs.calcAge(_birth), 
@@ -122,8 +121,11 @@ class _HomePState extends State<HomeP> {
   @override
   void initState() {
     super.initState();
-
     _dataGet = getForms();
+    _fnControl.text = widget.user.firstName;
+    _lnControl.text = widget.user.lastName;
+    _sex = widget.user.sex=="male"?Sex.male:Sex.female;
+    _birth = widget.user.bday;
   }
 
   @override
@@ -147,7 +149,7 @@ class _HomePState extends State<HomeP> {
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0),),)
                            ),
                     onPressed: () async {
-                      User loggedUsr = await UsersDB.db_I.getUser_byID(widget.id);
+                      User loggedUsr = await UsersDB.db_I.getUser_byID(widget.user.id!);
                       await UsersDB.db_I.update(loggedUsr.replicate(loginState: false));
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => LoginSelector()), 
                                                   (Route<dynamic> route) => false);
@@ -165,7 +167,7 @@ class _HomePState extends State<HomeP> {
                   ),
                   Icon(Icons.medical_information),
                   SizedBox(width: 10,),
-                  Text("Logged in as ${widget.username}", 
+                  Text("Logged in as ${widget.user.username}", 
                        style: GoogleFonts.oswald(fontSize: 20,),),
                   SizedBox(width: 10,)
                 ],
@@ -181,7 +183,7 @@ class _HomePState extends State<HomeP> {
                     myForms.isEmpty?
                       SizedBox(height: 0,):
                       SizedBox(
-                        height: 300,
+                        height: 340,
                         child: ScrollSnapList(
                           dynamicItemSize: true,
                           dynamicItemOpacity: 0.7,
@@ -191,7 +193,7 @@ class _HomePState extends State<HomeP> {
                             DentalForm form = myForms[i];
                             return SizedBox(
                               width: 200,
-                              height: 300,
+                              height: 340,
                               child: Card(
                                 elevation: 6,
                                 shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white), 
@@ -226,6 +228,14 @@ class _HomePState extends State<HomeP> {
                                           Text(DateFormat("dd-MM-yyyy").format(form.creationDT)),
                                         ],
                                       ),
+                                      SizedBox(height: 8,),
+                                      form.dentistID != null? Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text("Dr. ${form.dentistName}", style: TextStyle(fontStyle: FontStyle.italic, letterSpacing: 1),),
+                                          Text("Appointed Date: ${DateFormat("dd-MM-yyyy").format(form.appointmentDT!)}", style: TextStyle(fontSize: 13),)
+                                        ],
+                                      ): Text("Pending...", style: GoogleFonts.amiri(fontSize: 20, letterSpacing: 1.2),)
                                     ],
                                   ),
                                 )

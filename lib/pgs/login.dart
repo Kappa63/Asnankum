@@ -4,6 +4,7 @@ import 'package:dental_care/error_states.dart';
 import 'package:dental_care/db/users_db.dart';
 import 'package:dental_care/pgs/ds_home.dart';
 import 'package:dental_care/pgs/p_home.dart';
+import 'package:dental_care/pgs/signup.dart';
 import 'package:dental_care/funcs.dart';
 import 'package:flutter/material.dart';
 
@@ -41,19 +42,18 @@ class _LoginState extends State<Login> {
     }
 
     try {
-      _uControl.clear();
-      _pControl.clear();
+      
       User loggedUsr = await UsersDB.db_I.getUser_byLogin(usr, Convertors.toSHA256(pwd), widget.type);
       await UsersDB.db_I.update(loggedUsr.replicate(loginState: true));
       LoginErrorManager.bl_Error = false;
       if(widget.type == "Patient")
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeP(username: usr,
-                                                                                      id: loggedUsr.id!,)), 
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeP(user: loggedUsr,)), 
                                     (Route<dynamic> route) => false);
       else
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeDS(username: usr, 
-                                                                                       id: loggedUsr.id!,)), 
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomeDS(user: loggedUsr)), 
                                       (Route<dynamic> route) => false);
+      _uControl.clear();
+      _pControl.clear();
     } on Exception {
       LoginErrorManager.bl_Error = true;
       setState(() {});
@@ -72,13 +72,8 @@ class _LoginState extends State<Login> {
         toolbarHeight: 40,
         backgroundColor: Colors.pink[300],
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-              Text("Dental Care", 
-                    style: GoogleFonts.oswald(fontSize: 20,),),
-          ],
-        ),
+        title: Text("ASNANKUM", 
+                    style: GoogleFonts.oswald(fontSize: 20, letterSpacing: 1),),
       ),
       backgroundColor: Colors.grey[300],
       body: SafeArea(
@@ -89,13 +84,13 @@ class _LoginState extends State<Login> {
               children: [
                 Icon(widget.type=="Patient"?Icons.airline_seat_flat_angled_outlined:Icons.medical_services_outlined, size: 140,),
           
-                SizedBox(height: 55,),
+                SizedBox(height: 25,),
           
                 Text("Welcome!", 
                       style: GoogleFonts.balooPaaji2(fontSize: 60, fontWeight: FontWeight.bold),
                     ),
                 
-                SizedBox(height: 45,),
+                SizedBox(height: 15,),
           
                 Text("Ready to LOGIN?",
                       style: TextStyle(fontSize: 20)),
@@ -168,12 +163,13 @@ class _LoginState extends State<Login> {
           
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: GestureDetector(
-                    onTap: logIn,
+                  child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[200]),
+                                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),)
+                           ),
+                    onPressed: logIn,
                     child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(color: Colors.pink[200],
-                                                borderRadius: BorderRadius.circular(12)),
+                      padding: EdgeInsets.all(15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -188,6 +184,26 @@ class _LoginState extends State<Login> {
                       )
                     ),
                   ),
+                ),
+
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?",
+                          style: TextStyle(fontWeight: FontWeight.bold),),
+                    
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => Signup(type: widget.type)), 
+                                                                               (Route<dynamic> route) => false);
+                      },
+                      child: Text(" Create One",
+                            style: TextStyle(color: Colors.blue, 
+                                            fontWeight: FontWeight.bold,),
+                          ),
+                    ),
+                  ],
                 ),
           
                 SizedBox(height: 30,),

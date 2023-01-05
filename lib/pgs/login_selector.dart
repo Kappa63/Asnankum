@@ -28,13 +28,8 @@ class _LoginSelectorState extends State<LoginSelector> {
         toolbarHeight: 40,
         backgroundColor: Colors.pink[300],
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-              Text("Dental Care", 
-                    style: GoogleFonts.oswald(fontSize: 20,),),
-          ],
-        ),
+        title: Text("ASNANKUM", 
+                    style: GoogleFonts.oswald(fontSize: 20, letterSpacing: 1),),
       ),
       backgroundColor: Colors.grey[300],
       body: SafeArea(

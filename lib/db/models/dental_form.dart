@@ -103,9 +103,9 @@ class DentalForm {
                    imgPath: imgPath?? this.imgPath,
 
                    status: status?? this.status,
-                   appointmentDT: appointmentDT?? this.appointmentDT,
-                   dentistID: dentistID?? this.dentistID,
-                   dentistName: dentistName?? this.dentistName,);
+                   appointmentDT: appointmentDT==null?this.appointmentDT:(appointmentDT==DateTime.fromMicrosecondsSinceEpoch(9254)?null:appointmentDT),
+                   dentistID: dentistID==null?this.dentistID:(dentistID==-785?null:dentistID),
+                   dentistName: dentistName==null?this.dentistName:(dentistName=="dbs78s"?null:dentistName),);
              
 
   static DentalForm Deserialize(Map<String, Object?> dt) => DentalForm(
@@ -147,6 +147,6 @@ class DentalForm {
     DentalFormFields.status: status?1:0,
     DentalFormFields.appointmentDT: appointmentDT?.toIso8601String(),
     DentalFormFields.dentistID: dentistID,
-    DentalFormFields.dentistName: DentalFormFields.dentistName,
+    DentalFormFields.dentistName: dentistName,
   };
 }

@@ -26,7 +26,7 @@ class WidgetOnError {
 class GeneralFuncs {
   static int calcAge(DateTime bd){
     final DateTime td = DateTime.now();
-    return (td.year-bd.year)+(((td.day-bd.day)<=0 && (td.month-bd.month)<=0)?0:-1);
+    return (td.year-bd.year)+(((td.day-bd.day)>=0 && (td.month-bd.month)>=0)?0:-1);
   }
 
   static Future<File> saveImg(String imPath) async {

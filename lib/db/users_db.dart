@@ -31,27 +31,31 @@ class UsersDB {
                             ${UserFields.type} TEXT NOT NULL,
                             ${UserFields.username} TEXT NOT NULL,
                             ${UserFields.password} TEXT NOT NULL,
-                            ${UserFields.loginState} BOOLEAN NOT NULL
+                            ${UserFields.loginState} BOOLEAN NOT NULL,
+                            ${UserFields.firstName} TEXT NOT NULL,
+                            ${UserFields.lastName} TEXT NOT NULL,
+                            ${UserFields.bday} TEXT NOT NULL,
+                            ${UserFields.sex} TEXT NOT NULL
                          )''');
 
-    await db_.execute('''INSERT INTO $users_table 
-                            (${UserFields.type}, ${UserFields.username},
-                            ${UserFields.password}, ${UserFields.loginState})
-                          VALUES ("Patient", "TestPatient1",
-                                  "1772d0119cc344f719853b2c032c2921398636766efd3ed2ffbad1c798e2bd97",
-                                  FALSE),
+    // await db_.execute('''INSERT INTO $users_table 
+    //                         (${UserFields.type}, ${UserFields.username},
+    //                         ${UserFields.password}, ${UserFields.loginState})
+    //                       VALUES ("Patient", "TestPatient1",
+    //                               "1772d0119cc344f719853b2c032c2921398636766efd3ed2ffbad1c798e2bd97",
+    //                               FALSE),
 
-                                ("Patient", "TestPatient2",
-                                  "ce012bbb6a075d2c91e4da607fcbbb9b9c4a3d3a9a9b5e2889f24fdb1d9952f5",
-                                  FALSE),
+    //                             ("Patient", "TestPatient2",
+    //                               "ce012bbb6a075d2c91e4da607fcbbb9b9c4a3d3a9a9b5e2889f24fdb1d9952f5",
+    //                               FALSE),
 
-                                ("Dental Student", "TestDS1",
-                                  "1772d0119cc344f719853b2c032c2921398636766efd3ed2ffbad1c798e2bd97",
-                                  FALSE),
+    //                             ("Dental Student", "TestDS1",
+    //                               "1772d0119cc344f719853b2c032c2921398636766efd3ed2ffbad1c798e2bd97",
+    //                               FALSE),
 
-                                ("Dental Student", "TestDS2",
-                                  "ce012bbb6a075d2c91e4da607fcbbb9b9c4a3d3a9a9b5e2889f24fdb1d9952f5",
-                                  FALSE)''');
+    //                             ("Dental Student", "TestDS2",
+    //                               "ce012bbb6a075d2c91e4da607fcbbb9b9c4a3d3a9a9b5e2889f24fdb1d9952f5",
+    //                               FALSE)''');
   }
 
   Future<User> insert(User user) async {
@@ -93,7 +97,7 @@ class UsersDB {
     final db_ = await db_I.db;
 
     final user = await db_.query(users_table, columns: UserFields.vals, 
-                                where: '''${UserFields.loginState} = ?''', 
+                                where: '${UserFields.loginState} = ?', 
                                 whereArgs: [1]);
 
     return user.isEmpty?null:User.Deserialize(user.first);

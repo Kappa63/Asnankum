@@ -42,9 +42,9 @@ class _PageDirectorState extends State<PageDirector> {
               return LoginSelector();
             else
               if(loggedUsr!.type == "Patient")
-                return HomeP(username: loggedUsr!.username, id: loggedUsr!.id!);
+                return HomeP(user: loggedUsr!);
               else
-                return HomeDS(username: loggedUsr!.username, id: loggedUsr!.id!);
+                return HomeDS(user: loggedUsr!,);
           else if (snap.hasError)
             throw Exception("Missing Data: Snap Error");
           else 
