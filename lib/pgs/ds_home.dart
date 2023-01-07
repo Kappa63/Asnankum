@@ -66,11 +66,11 @@ class _HomeDSState extends State<HomeDS> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
               toolbarOpacity: 0.9,
               toolbarHeight: 40,
-              backgroundColor: Colors.pink[300],
+              backgroundColor: Colors.blue[300],
               title: Row(
                 children: [
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[300]),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue[300]),
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0),),)
                            ),
                     onPressed: () async {

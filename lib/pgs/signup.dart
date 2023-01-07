@@ -99,7 +99,7 @@ class _SignupState extends State<Signup> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
         toolbarOpacity: 0.9,
         toolbarHeight: 40,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: Colors.blue[300],
         centerTitle: true,
         title: Text("ASNANKUM", 
                     style: GoogleFonts.oswald(fontSize: 20, letterSpacing: 1),),
@@ -138,7 +138,7 @@ class _SignupState extends State<Signup> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.pink.shade200),
+                                      borderSide: BorderSide(color: Colors.blue.shade200),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     hintText: "First Name",
@@ -167,7 +167,7 @@ class _SignupState extends State<Signup> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.pink.shade200),
+                                      borderSide: BorderSide(color: Colors.blue.shade200),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     hintText: "Last Name",
@@ -221,7 +221,7 @@ class _SignupState extends State<Signup> {
                                 value: Sex.female,
                                 groupValue: _sex,
                                 selected: _sex == Sex.female,
-                                selectedTileColor: Colors.pink[100],
+                                selectedTileColor: Colors.blue[100],
                                 shape: RoundedRectangleBorder(side: BorderSide(color: SignupErrorManager.s_Error?Colors.red:Colors.white),
                                                               borderRadius: BorderRadius.circular(30)),
                                 activeColor: Colors.black54,
@@ -249,7 +249,7 @@ class _SignupState extends State<Signup> {
                     SizedBox(height: 20,),
                     
                     ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[200]),
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue[200]),
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),)
                            ),
                       onPressed: () async {
@@ -294,7 +294,7 @@ class _SignupState extends State<Signup> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.pink.shade200),
+                            borderSide: BorderSide(color: Colors.blue.shade200),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           hintText: "Username",
@@ -326,7 +326,7 @@ class _SignupState extends State<Signup> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.pink.shade200),
+                            borderSide: BorderSide(color: Colors.blue.shade200),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           hintText: "Password",
@@ -348,7 +348,7 @@ class _SignupState extends State<Signup> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[300]),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue[300]),
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),)
                            ),
                     onPressed: signUp,

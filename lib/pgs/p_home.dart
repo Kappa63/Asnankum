@@ -141,11 +141,11 @@ class _HomePState extends State<HomeP> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
               toolbarOpacity: 0.9,
               toolbarHeight: 40,
-              backgroundColor: Colors.pink[300],
+              backgroundColor: Colors.blue[300],
               title: Row(
                 children: [
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[300]),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue[300]),
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0),),)
                            ),
                     onPressed: () async {
@@ -308,7 +308,7 @@ class _HomePState extends State<HomeP> {
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.pink.shade200),
+                                          borderSide: BorderSide(color: Colors.blue.shade200),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         hintText: "First Name",
@@ -328,7 +328,7 @@ class _HomePState extends State<HomeP> {
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.pink.shade200),
+                                          borderSide: BorderSide(color: Colors.blue.shade200),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         hintText: "Last Name",
@@ -373,7 +373,7 @@ class _HomePState extends State<HomeP> {
                                       value: Sex.female,
                                       groupValue: _sex,
                                       selected: _sex == Sex.female,
-                                      selectedTileColor: Colors.pink[100],
+                                      selectedTileColor: Colors.blue[100],
                                       shape: RoundedRectangleBorder(side: BorderSide(color: Colors.white),
                                                                     borderRadius: BorderRadius.circular(30)),
                                       activeColor: Colors.black54,
@@ -438,7 +438,7 @@ class _HomePState extends State<HomeP> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.pink.shade200),
+                                    borderSide: BorderSide(color: Colors.blue.shade200),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   hintText: "Complaints (Describe Issue)",
@@ -460,7 +460,7 @@ class _HomePState extends State<HomeP> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.pink.shade200),
+                                    borderSide: BorderSide(color: Colors.blue.shade200),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   hintText: "Allergies (If Applicable)",

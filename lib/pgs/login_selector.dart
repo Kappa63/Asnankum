@@ -26,7 +26,7 @@ class _LoginSelectorState extends State<LoginSelector> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
         toolbarOpacity: 0.9,
         toolbarHeight: 40,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: Colors.blue[300],
         centerTitle: true,
         title: Text("ASNANKUM", 
                     style: GoogleFonts.oswald(fontSize: 20, letterSpacing: 1),),
@@ -63,7 +63,7 @@ class _LoginSelectorState extends State<LoginSelector> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.pink[200],
+                        color: Colors.blue[200],
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -93,7 +93,7 @@ class _LoginSelectorState extends State<LoginSelector> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.pink[200],
+                        color: Colors.blue[200],
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(25),
                       ),

@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
         toolbarOpacity: 0.9,
         toolbarHeight: 40,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: Colors.blue[300],
         centerTitle: true,
         title: Text("ASNANKUM", 
                     style: GoogleFonts.oswald(fontSize: 20, letterSpacing: 1),),
@@ -110,7 +110,7 @@ class _LoginState extends State<Login> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.pink.shade200),
+                            borderSide: BorderSide(color: Colors.blue.shade200),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           hintText: "Username",
@@ -142,7 +142,7 @@ class _LoginState extends State<Login> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.pink.shade200),
+                            borderSide: BorderSide(color: Colors.blue.shade200),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           hintText: "Password",
@@ -164,7 +164,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.pink[200]),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue[200]),
                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),)
                            ),
                     onPressed: logIn,
